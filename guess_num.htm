@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUESS THE NUMBER</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            height: 80vh;
+            width: 100vw;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .message {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .lose {
+            color: red;
+        }
+
+        #restartBtn {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>TRY to<br> GUESS THE NUMBER in 10 moves</h2>
+
+        <!-- Input for maximum range -->
+        <label id="max_lab" for="maxInput">Enter the maximum range:</label>
+        <input id="maxInput" type="number" placeholder="Enter max range">
+        <button type="submit" id="startGameBtn" onclick="startGame()">START GAME</button>
+        
+        <!-- Input for user's guess -->
+        <label for="input_guess">Input your Guess</label>
+        <input id="input_guess" type="number">
+        <button type="submit" id="guess_num" onclick="check()">CHECK</button>
+
+        <!-- Display results and restart button -->
+        <ul id="display"></ul>
+        <button id="restartBtn" onclick="restartGame()">RESTART</button>
+    </div>
+
+    <script>
+        let achievements = {
+            win: "You win",
+            low: 'Your guess is low',
+            high: 'Your guess is too high',
+            lose: 'You lose'
+        }
+
+        let max;
+        let resultDisplay = document.getElementById("display");
+        let random_num;
+        let guesses = 0;
+
+        function startGame() {
+            max = parseInt(document.getElementById("maxInput").value);
+            random_num = Math.floor(Math.random() * max);
+
+            document.getElementById('startGameBtn').style.display = 'none';
+            document.getElementById('maxInput').style.display = 'none';
+            document.getElementById('max_lab').style.display = 'none';
+
+        }
+
+        function check() {
+            if (!max) {
+                alert('Please start the game first by entering the maximum range.');
+                return;
+            }
+
+            let guess_num = parseInt(document.getElementById("input_guess").value);
+            let result;
+
+            if (guesses >= 10) {
+                result = achievements.lose;
+            } else if (guess_num === random_num) {
+                result = achievements.win;
+            } else if (guess_num > random_num) {
+                result = achievements.high;
+            } else if (guess_num < random_num) {
+                result = achievements.low;
+            }
+
+            let listItem = document.createElement("li");
+            let yourGuessItem = document.createElement('li');
+            yourGuessItem.textContent = `Your Guess: ${guess_num}`;
+            listItem.textContent = `Result: ${result}`;
+            listItem.classList.add(result === achievements.lose ? 'lose' : 'message');
+
+            resultDisplay.appendChild(yourGuessItem);
+            resultDisplay.appendChild(listItem);
+
+            if (result === achievements.lose || result === achievements.win) {
+                document.getElementById('guess_num').disabled = true;
+                document.getElementById('restartBtn').style.display = 'block';
+            }
+
+            guesses++;
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+            
+    </script>     
+</body>
+</html>
